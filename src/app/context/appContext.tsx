@@ -91,7 +91,7 @@ const AppProvider = ({ children }: Props) => {
     <AppContext.Provider value={values}>
       {children}
       {isShow && <Loading />}
-      <Toaster position="bottom-right" richColors />
+      <Toaster position="top-center" richColors />
     </AppContext.Provider>
   );
 };

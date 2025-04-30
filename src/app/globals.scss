@@ -128,12 +128,13 @@ main {
     left: 0;
     right: 0;
     bottom: 90px;
-    height: $bottom-h;
+    height: 500px;
     background: url("/images/layout-1.png") center / cover no-repeat;
     z-index: 1;                                   // กลาง
     pointer-events: none;
     @media screen and (max-width: 900px) {
     bottom: 0px;
+    height: $bottom-h;
     }
   }
 }
