@@ -16,7 +16,7 @@ export default function Section({ children }: SectionProps) {
   }, [pathname]);
   return (
     <>
-      <div className={`relative flex flex-col ${isLogin ? "bg-layout-first":"bg-rov2"} min-h-[85vh]`}>
+      <div className={`relative flex flex-col ${isLogin ? "bg-layout-first":"bg-rov2"} min-h-[90vh]`}>
         <div className={`${isLogin ? "bg-layout-second":""}  p-4`}>
           <main className="relative flex-1 ">
             <div className="flex justify-center">

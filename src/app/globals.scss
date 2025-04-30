@@ -132,6 +132,9 @@ main {
     background: url("/images/layout-1.png") center / cover no-repeat;
     z-index: 1;                                   // กลาง
     pointer-events: none;
+    @media screen and (max-width: 900px) {
+    bottom: 0px;
+    }
   }
 }
 
@@ -162,6 +165,8 @@ main {
     @media screen and (max-width: 900px) {
       max-width: 360px;
       max-height: 380px;
+    bottom: 0px;
+
     }
   }
 }

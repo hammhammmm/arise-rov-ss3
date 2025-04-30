@@ -1,5 +1,5 @@
 import { Button } from "@nextui-org/react";
-import moment from "moment";
+import moment from "moment-timezone";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
