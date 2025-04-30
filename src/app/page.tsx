@@ -69,10 +69,9 @@ export default function Page({}: Props) {
           </Card>
         </div>
         <div className="flex flex-col gap-4">
-          <Daily />
-          <Daily />
-          <Daily />
-          <Daily />
+          <Daily acts={userInfo.acts}
+                    uuid={userInfo.uuid}
+                    refresh={refresh}/>
         </div>
 
         <div className="feedback-card p-8 flex flex-col gap-4 items-start">
@@ -90,7 +89,7 @@ export default function Page({}: Props) {
       {/* <div className="w-full mt-4">
         <RedeemList userInfo={userInfo} refresh={refresh} />
       </div> */}
-      <div className="w-full mt-4  bg-blue-800/80 rounded-lg py-8 px-4">
+      {/* <div className="w-full mt-4  bg-blue-800/80 rounded-lg py-8 px-4">
         <p className="text-3xl mb-4 text-center text-white uppercase glow bold">
           Arise Connext {process.env.NEXT_PUBLIC_ARISE_CONNEXT_EP}
         </p>
@@ -135,7 +134,7 @@ export default function Page({}: Props) {
             </>
           )}
         </div>
-      </div>
+      </div> */}
     </>
   );
 }
