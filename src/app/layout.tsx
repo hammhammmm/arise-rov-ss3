@@ -1,0 +1,88 @@
+import clsx from "clsx";
+import type { Metadata } from "next";
+import { Monoton } from 'next/font/google'
+import "./globals.scss";
+import { Providers } from "./providers";
+import Navbar from "@components/Navbar";
+import Image from "next/image";
+import Social from "@components/Social";
+
+const title = `Arise Connext ${process.env.NEXT_PUBLIC_ARISE_CONNEXT_EP}`;
+const description = "Arise by INFINITAS, Making digital life possible for All";
+const keywords = [""];
+export const metadata: Metadata = {
+  title: title,
+  description: description,
+  generator: "Next.js",
+  keywords: keywords,
+  themeColor: [{ media: "(prefers-color-scheme: dark)", color: "#fff" }],
+  authors: [
+    { name: "Thitipat Na Nakorn" },
+    {
+      name: "Thitipat Na Nakorn",
+      url: "https://www.linkedin.com/in/thitipat-na-nakorn/",
+    },
+  ],
+  viewport:
+    "minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover",
+  icons: [
+    { rel: "apple-touch-icon", url: "icons/apple-touch-icon.png" },
+    { rel: "icon", url: "icons/favicon-32x32.png" },
+  ],
+  openGraph: {
+    type: "website",
+    url: process.env.NEXT_PUBLIC_URL,
+    title: title,
+    description: description,
+    siteName: title,
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_URL}/images/cover.png`,
+      },
+    ],
+  },
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" suppressHydrationWarning >
+      <body className={clsx("min-h-screen bg antialiased")}>
+        
+        <Providers>
+          <div className="relative flex flex-col min-h-screen">
+            <main className="relative flex-1 ">
+              <div className="flex justify-center">
+                <div className="w-[700px] p-4">
+                  <Navbar />
+                  {children}
+                </div>
+              </div>
+            </main>
+            <div className="relative flex mt-20">
+              <div className="basis-4/12">
+                <Image
+                  src="/images/arise-soul-crop.png"
+                  width={150}
+                  height={200}
+                  alt=""
+                  className="absolute top-[19px]"
+                ></Image>
+              </div>
+              <div className="basis-8/12 p-4">
+                <p className="glow uppercase text-2xl bold">
+                  Thank you for joining us.
+                </p>
+                <p className="glow uppercase text-2xl bold">See you again.</p>
+              </div>
+            </div>
+            <Social />
+          </div>
+        </Providers>
+      </body>
+    </html>
+  );
+}
