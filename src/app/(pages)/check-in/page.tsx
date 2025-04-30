@@ -117,21 +117,23 @@ export default function Page({}: Props) {
   };
   return (
     <>
-    <div className="flex justify-center" ref={loginRef}>
-      <div className="flex flex-col justify-start flex-wrap content-start gap-6 mt-6  w-full max-w-[700px] items-center p-4">
+    <div className="flex justify-center mt-8" ref={loginRef}>
+      <div className="flex flex-col justify-start flex-wrap content-start gap-6 mt-6  w-full max-w-[700px] items-center">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-full flex flex-col gap-6 text-center bg-black/50 p-4 rounded-lg"
+          className="w-full flex flex-col gap-10 text-left !rounded-none form-checkin"
         >
           <Input
+           labelPlacement={"outside"}
             type="email"
             label="Email"
             isDisabled
             size="lg"
             value={eligibleForm?.email}
-            className="input"
+            className="input "
           />
           <Input
+                labelPlacement={"outside"}
             type="text"
             label="First Name"
             isDisabled
@@ -140,6 +142,7 @@ export default function Page({}: Props) {
             className="input "
           />
           <Input
+                labelPlacement={"outside"}
             type="text"
             label="Last Name"
             isDisabled
@@ -156,6 +159,7 @@ export default function Page({}: Props) {
                 <Input
                   {...field}
                   ref={employeeIdRef}
+                labelPlacement={"outside"}
                   type="tel"
                   maxLength={6}
                   label="Employee Id"
@@ -186,9 +190,9 @@ export default function Page({}: Props) {
 
           <Button
             className="relative  text-black
-            bg-[#FCD11A]
+            bg-[#1AE5BC]
              font-bold
-             rounded-lg text-xl px-10 py-2 text-center mb-2 min-w-[160px] h-[64px] disabled:opacity-30"
+             rounded-full text-lg px-10 py-2 text-center mb-2 min-w-[160px] h-[48px] disabled:bg-[#111720] disabled:text-[#3F4148] disabled:opacity-100"
             type="submit"
             color="primary"
             isLoading={submit.isPending || isSubmitting}
@@ -196,7 +200,7 @@ export default function Page({}: Props) {
               !isValid || !isSelected || submit.isPending || isSubmitting
             }
           >
-            Sign In!
+            Sign In
           </Button>
         </form>
       </div>

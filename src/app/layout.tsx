@@ -1,11 +1,8 @@
 import clsx from "clsx";
 import type { Metadata } from "next";
-import { Monoton } from 'next/font/google'
 import "./globals.scss";
 import { Providers } from "./providers";
-import Navbar from "@components/Navbar";
-import Image from "next/image";
-import Social from "@components/Social";
+import Section from "./section";
 
 const title = `Arise Connext ${process.env.NEXT_PUBLIC_ARISE_CONNEXT_EP}`;
 const description = "Arise by INFINITAS, Making digital life possible for All";
@@ -49,38 +46,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning >
-      <body className={clsx("min-h-screen bg antialiased")}>
-        
+    <html lang="en" suppressHydrationWarning>
+      <body className={clsx(" antialiasedbg ")}>
         <Providers>
-          <div className="relative flex flex-col min-h-screen">
-            <main className="relative flex-1 ">
-              <div className="flex justify-center">
-                <div className="w-[700px] p-4">
-                  <Navbar />
-                  {children}
-                </div>
-              </div>
-            </main>
-            <div className="relative flex mt-20">
-              <div className="basis-4/12">
-                <Image
-                  src="/images/arise-soul-crop.png"
-                  width={150}
-                  height={200}
-                  alt=""
-                  className="absolute top-[19px]"
-                ></Image>
-              </div>
-              <div className="basis-8/12 p-4">
-                <p className="glow uppercase text-2xl bold">
-                  Thank you for joining us.
-                </p>
-                <p className="glow uppercase text-2xl bold">See you again.</p>
-              </div>
-            </div>
-            <Social />
-          </div>
+          <Section>{children}</Section>
         </Providers>
       </body>
     </html>

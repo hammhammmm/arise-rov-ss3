@@ -115,20 +115,11 @@ export default function LoginPage() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
     <>
-      <div className="flex flex-col gap-6 mt-3 justify-center items-center mb-12">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-2xl  font-bold tracking-widest text-center text-white">
-            Welcome to Arise Connext {process.env.NEXT_PUBLIC_ARISE_CONNEXT_EP}
-          </h1>
-          {/* <h4 className="text-xl  text-[white]  text-center">
-            {"Please check-in to redeem your food & drink coupon"}
-          </h4> */}
-        </div>
-
-        <div className="mt-6 flex flex-col gap-4 justify-center items-center">
+      <div className="flex flex-col gap-6 mt-3 justify-center items-start md:items-center ">
+        <div className="mt-6 flex flex-col gap-4 justify-center items-start md:items-center">
           <Button
             size="lg"
-            className="w-full bg-white rounded-md max-w-[300px]"
+            className="w-full bg-white rounded-full max-w-[300px] border-1 border-[#6E7A91] text-md font-bold"
             onPress={() => {
               handleLoginMs();
             }}

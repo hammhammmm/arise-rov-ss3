@@ -37,7 +37,7 @@ export default function StaffMode({ time }: Props) {
   return (
     <div className="flex flex-row justify-end w-full">
       <Button
-        className="text-lg"
+        className="text-md rounded-full font-bold"
         color="warning"
         onPress={() => {
           router.push("/redeem");

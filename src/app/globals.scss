@@ -5,6 +5,9 @@
 @import "fonts.scss";
 @import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap');
 
+$top-h    : 120px;                          // สูงแถบบน
+$bottom-h :  221px;
+
 :root {
   --neon-effect: 0 0 0 transparent,
     0 0 20px rgb(255, 0, 0),
@@ -51,24 +54,213 @@ body {
 
 
 .bg {
-  // background: rgb(63,51,205);
-  // background: linear-gradient(180deg, rgba(63,51,205,1) 45%, rgba(0,194,255,1) 98%);
-  // background: rgb(241,251,253);
-  // background: linear-gradient(315deg, rgba(241,251,253,1) 7%, rgba(98,170,203,1) 23%, rgba(243,194,131,1) 54%, rgba(181,16,23,1) 86%);
-  // background: url("/images/bg.png") no-repeat center;
-  background: url("/images/bg-arise-c.png") no-repeat center;
-  // background: url("/images/halloween-bg.png") no-repeat center;
-  // background-color: #000000;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-attachment: fixed;
+    // background: url("/images/layout-1.png")  bottom center / 100% 220px no-repeat;
+  // background: url("/images/bg-rov.png")  top    center / cover no-repeat;
+  // width: 100%;
+  // height: 100%;
+  // background-size: cover;
+  // background-attachment: scroll, fixed;
+  // margin:0;
+  // min-height:100vh;   
 
   @media screen and (max-width: 700px) {
     background-size: cover;
   }
 }
 
+.bg-layout-first{
+  // background: url("/images/layout-1.png") no-repeat center;
+  // width: 100%;
+  // height: 100%;
+  // background-size: contain;
+  // background-attachment: fixed;
+  // bottom: 0;
+  // position: fixed;
+}
+
+main {
+  position: relative;
+  z-index: 7;                    // สูงกว่าพื้นหลังทุกชั้น
+  // padding-bottom: $bottom-h; // กันไม่ให้เนื้อหาโดนทับ
+
+
+  // &::before {
+  //   content: "";
+  //   position: fixed;
+  //   left: 0;
+  //   right: 0;
+  //   bottom: 0;
+  //   height: $bottom-h;
+  //   background: url("/images/layout-1.png") center / cover no-repeat;
+  //   z-index: 3;                                   // กลาง
+  //   pointer-events: none;
+  // }
+}
+
+.button-primary {
+  background: #1AE5BC;
+  color: #000;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  font-weight: 600;
+  &:disabled {
+    background: rgba(#fff, 0.15);
+    color: rgba(#fff, 0.40);
+    font-weight: 600 !important;
+  }
+}
+.bg-rov2{
+  margin: 0;
+
+  // ❶ พื้นหลังหลัก (z:1)
+  &::before {
+    content: "";
+    position: fixed;
+    inset: 0;                         // top/left/right/bottom = 0
+    background: url("/images/bg-rov2.png") center / cover no-repeat;
+    z-index: 1;
+  }
+}
+.bg-layout-second{
+      &::before {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 90px;
+    height: $bottom-h;
+    background: url("/images/layout-1.png") center / cover no-repeat;
+    z-index: 1;                                   // กลาง
+    pointer-events: none;
+  }
+}
+
+.bg-layout-first {
+  margin: 0;
+
+  // ❶ พื้นหลังหลัก (z:1)
+  &::before {
+    content: "";
+    position: fixed;
+    inset: 0;                         // top/left/right/bottom = 0
+    background: url("/images/bg-rov.png") center / cover no-repeat;
+    z-index: 1;
+  }
+
+  // ❷ แถบล่าง overlay (z:2)
+  &::after {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 115px;
+    width: 780px;
+    height: 480px;
+    background: url("/images/arum.svg") center / cover no-repeat;
+    z-index: 4;
+    pointer-events: none;
+    @media screen and (max-width: 900px) {
+      max-width: 360px;
+      max-height: 380px;
+    }
+  }
+}
+
+.title{
+  background: -webkit-linear-gradient(30deg,#9EFBD3, #57E9F2,#45D4FB);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0px 0px 0px rgba(#D6FAFF, 0.1),
+  -3px 10px 12px rgba(#D6FAFF,.3);
+}
+.subTitle{
+  background: -webkit-linear-gradient(30deg,#AEB4C1, #FFFFFF,#AEB4C1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.form-checkin{
+  label{
+    color: #fff;
+   }
+   div>div>div{
+    border-radius: 4px !important;
+    border: 1px solid #2B3840 !important;
+    background: rgba($color: #000, $alpha: 0.16);
+    color: #fff;
+   }
+}
+
+.feedback-card {
+  /* surface */
+  background: #0d0d0d;              /* ≈ very-dark grey, not true black   */
+  color: #cfd2de;                   /* the light-grey body text you see  */
+  border-radius: 24px;              /* same big curved corners           */
+  position: relative;               /* lets ::before sit on top          }
+  overflow: hidden;                 /* masks the pseudo-border           */
+}
+
+/* 1-pixel “ghost” border built with a pseudo-element */
+.feedback-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;                         /* stretch over the whole card       */
+  padding: 1px;                     /* = border thickness                */
+  border-radius: inherit;           /* keep the same 32 px roundness     */
+
+  /* subtle conic (a.k.a angular) gradient:           *
+   *  – tiny bit of white (≈8 % opacity)              *
+   *  – transparent gap                              *
+   * Repeat twice so the effect is evenly spread     */
+  background: conic-gradient(
+    rgba(255,255,255,0.9) 0   25%,
+    rgba(255,255,255,0.2)              25% 50%,
+    rgba(255,255,255,0.9)   50% 75%,
+    rgba(255,255,255,0.2)              75% 100%
+  );
+
+  /* show *only* the 1-pixel ring, hide the fill */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+
+  /* makes the edge look as smooth as in Figma */
+  filter: blur(20px);
+
+  pointer-events: none;             /* keep clicks on real card          */
+}
+
+.modal-wrapper {
+  /* base colour --------------------------------------------------------- */
+  background: #050505;             /* not true black – keeps a bit of depth */
+
+  /* ✨ the two radial glows --------------------------------------------- *
+   * 1. top-left teal burst (20 % wide, 18 % tall)                        *
+   * 2. bottom-right teal burst (same hue, a touch dimmer)                */
+  background-image:
+    radial-gradient(160% 120%
+                    at 20% 15%,            /* anchor TL */
+                    rgba(0, 255, 200, .22) 0%,
+                    rgba(0, 25, 19, 0) 60%),
+    radial-gradient(140% 110%
+                    at 80% 85%,            /* anchor BR */
+                    rgba(0, 255, 200, .15) 0%,
+                    rgba(0, 25, 19, 0) 65%);
+
+  /* corners ------------------------------------------------------------- */
+  border-radius: 28px;
+
+  /* optional depth / separation ---------------------------------------- */
+  box-shadow: 0 1.25rem 2.25rem rgba(0,0,0,.55);
+
+  /* spacing so the glow doesn’t clip ----------------------------------- */
+  padding: 2.75rem 2.5rem 3.5rem;
+  position: relative;
+  overflow: hidden;                /* keeps glows inside the curve        */
+  color: #fff;                     /* your text colour                    */
+}
 .font-bold,
 .bold {
   font-family: var(--KrungthaiFast-Bold) !important;

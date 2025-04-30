@@ -108,22 +108,22 @@ export default function Estamp({ acts, uuid, refresh }: Props) {
         hideCloseButton={true}
         onClose={refresh}
       >
-        <ModalContent>
+        <ModalContent className="rounded-3xl modal-wrapper">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1 text-center">
-                Please show this QR code to redeem.
-              </ModalHeader>
               <ModalBody>
                 <div className="flex flex-col items-center justify-center gap-4">
-                  <p className="text-xl bold text-blue-900 uppercase text-center">
+                  {/* <p className="text-xl bold text-blue-900 uppercase text-center">
                     {Number(selectAct?.id) + 1}.{selectAct?.title}
-                  </p>
+                  </p> */}
                   <QRCode value={`[${uuid},${selectAct?.uuid}]`} />
+                  <p className="text-2xl text-white font-bold">Food & Beverage QR</p>
+                  <p className="text-center text-gray-400">Show to staff to redeem your refreshments.</p>
+
                 </div>
                 <div className="flex justify-center items-center mt-6 mb-6">
-                  <Button color="danger" onPress={onClose} variant="light">
-                    Close
+                  <Button onPress={onClose} className="rounded-full button-primary text-lg w-full">
+                    Ok
                   </Button>
                 </div>
               </ModalBody>
