@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { QrReader } from "react-qr-reader";
 import { toast } from "sonner";
+import { Scanner } from '@yudiel/react-qr-scanner';
 
 export default function Page() {
   const router = useRouter();
@@ -52,10 +53,13 @@ export default function Page() {
       >
         <CardBody className="flex flex-col justify-center gap-3">
           <div className=" p-6">
+         
             <QrReader
               scanDelay={1000}
               onResult={(result, error) => {
                 if (!!result) {
+                  // @ts-ignore
+                  console.log(result?.text);
                   // @ts-ignore
                   setData(result?.text);
                 }

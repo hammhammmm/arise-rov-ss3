@@ -66,6 +66,8 @@ export const POST = async (req: Request, res: Response) => {
 
     const activities: RovActs[] = userInfo && userInfo.data[0].acts;
 
+    console.log(  "activities: ", activities);
+
     activities.forEach((act) => {
       if (act.id == actId) {
         if (act.isRedeemed) {
@@ -79,8 +81,11 @@ export const POST = async (req: Request, res: Response) => {
       }
     });
 
+    console.log(  "activities: ", activities);
+
+
     const { data, error } = await supabase
-      .from(`${process.env.TB_ARISE_EPASSPORT}`)
+      .from(TB_ARISE_CONNEXT)
       .update({
         acts: activities,
       })

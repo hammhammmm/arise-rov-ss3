@@ -6,11 +6,12 @@ import {
   ModalContent,
   ModalHeader,
   useDisclosure,
+  Image,
 } from "@nextui-org/react";
 import { Dispatch, SetStateAction, useState } from "react";
 
 import { Act } from "@/types/index";
-import QRCode from "react-qr-code";
+
 import { toast } from "sonner";
 import { haversineDistance } from "@libs/common";
 import moment from "moment";
@@ -19,6 +20,7 @@ import { number } from "yup";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { checkIn } from "@libs/api";
 import { AxiosError, AxiosResponse } from "axios";
+import QRCode from "qrcode";
 
 type ROVStatus = "past" | "today" | "future" | "future_or_past";
 export type RovActs = {
@@ -27,7 +29,7 @@ export type RovActs = {
   isChecked: boolean;
   isRedeemed: boolean;
   status?: ROVStatus;
-  updatedBy? : string;
+  updatedBy?: string;
 };
 
 type Props = {
@@ -40,6 +42,7 @@ type Props = {
 export default function Daily({ days, rovActs, uuid, refresh }: Props) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectAct, setSelectAct] = useState<RovActs>();
+  const [qrUrl, setQrUrl] = useState<string>("");
 
   // ask for / check geolocation permission
   const requestGeo = async () => {
@@ -148,6 +151,16 @@ export default function Daily({ days, rovActs, uuid, refresh }: Props) {
     },
   });
 
+  const generateQR = async (text: string) => {
+    console.log("text: ", text);
+    QRCode.toDataURL(text)
+      .then((url) => {
+        setQrUrl(url);
+        console.log("url: ", url);
+      })
+      .catch((err) => console.error(err));
+  };
+
   return (
     <>
       <p className="text-white text-2xl">Today Event</p>
@@ -160,7 +173,10 @@ export default function Daily({ days, rovActs, uuid, refresh }: Props) {
               index={index}
               day={day}
               requestGeo={requestGeo}
-              onOpen={onOpen}
+              onOpen={() => {
+                generateQR(`[${uuid},${day.id}]`);
+                onOpen();
+              }}
               confirm={confirm}
               setSelectAct={setSelectAct}
             />
@@ -190,7 +206,7 @@ export default function Daily({ days, rovActs, uuid, refresh }: Props) {
       ) : (
         <p className="text-white/60 text-center">No Future Event</p>
       )}
-      {/* [c4d4f2a5-1332-4946-9612-87a864ff766d,36ea4c94-6e3a-4725-89ea-ba0b8d77ef6e] */}
+
       <Modal
         isOpen={isOpen}
         placement={"center"}
@@ -208,7 +224,12 @@ export default function Daily({ days, rovActs, uuid, refresh }: Props) {
                   <p className="text-2xl bold text-white uppercase text-center">
                     {today.format("dddd DD MMMM YYYY")}
                   </p>
-                  <QRCode value={`[${uuid},${selectAct?.id}]`} />
+                  <p>{`[${uuid},${selectAct?.id}]`}</p>
+                  {/* <QRCode value={`[${uuid},${selectAct?.id}]`} /> */}
+                  {/* <QRCode value={`[${uuid},${selectAct?.id}]`} /> */}
+
+                  {/* <QRCodeCanvas value={"TEST"} size={300} /> */}
+                  <img src={qrUrl} alt="" width={400} height={400}></img>
                   <p className="text-2xl text-white font-bold">
                     Food & Beverage QR
                   </p>

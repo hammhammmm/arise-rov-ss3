@@ -7,10 +7,10 @@ const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 export async function middleware(request: NextRequest) {
   let previousURL = "";
   const cspHeader = `
-    default-src 'self';
+    default-src 'self' data:;
     connect-src 'self' https://login.microsoftonline.com ${baseUrl};
     script-src 'self' 'unsafe-inline' 'unsafe-eval';
-    style-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/css2?family=Monoton&display=swap;
 `;
 
   const contentSecurityPolicyHeaderValue = cspHeader
