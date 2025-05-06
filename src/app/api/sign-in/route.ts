@@ -63,9 +63,6 @@ export const POST = async (req: Request, res: Response) => {
       .select("*")
       .eq("employee_id", String(employeeId));
 
-    const is_registered =
-      checkRegister && checkRegister.length > 0 ? true : false;
-
     const arise_checkin = await supabase
       .from(process.env.TB_ARISE_CONNEXT as string)
       .insert([
@@ -74,7 +71,7 @@ export const POST = async (req: Request, res: Response) => {
           email: eligible.email,
           first_name: eligible.first_name,
           last_name: eligible.last_name,
-          is_walkin: !is_registered,
+          acts: [],
           created_at: now,
           updated_at: now,
           source: "",
@@ -93,48 +90,6 @@ export const POST = async (req: Request, res: Response) => {
     });
 
     cookies().delete("eligible");
-
-    // for e-passport
-    const arise_epassport = await supabase
-      .from(process.env.TB_ARISE_EPASSPORT as string)
-      .insert([
-        {
-          employee_id: eligible.employee_id,
-          email: eligible.email,
-          acts: acts,
-          created_at: new Date(),
-          updated_at: new Date(),
-        },
-      ]);
-
-    if (arise_epassport.error) {
-      console.log("arise_epassport.error: ", arise_epassport.error);
-      return NextResponse.json(
-        { message: "You have already received an e-passport.", code: 4000 },
-        { status: 400 }
-      );
-    }
-
-    // for coupons
-    const arise_coupons = await supabase
-      .from(process.env.TB_ARISE_COUPONS_USAGE as string)
-      .insert([
-        {
-          employee_id: eligible.employee_id,
-          email: eligible.email,
-          coupons: coupons,
-          created_at: new Date(),
-          updated_at: new Date(),
-        },
-      ]);
-
-    if (arise_coupons.error) {
-      console.log("arise_checkin.error: ", arise_coupons.error);
-      return NextResponse.json(
-        { message: "You have already received a coupons.", code: 4000 },
-        { status: 400 }
-      );
-    }
 
     return NextResponse.json(
       {

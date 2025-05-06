@@ -1,4 +1,3 @@
-"use client";
 import {
   Button,
   Divider,
@@ -8,22 +7,39 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@nextui-org/react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 import { Act } from "@/types/index";
 import QRCode from "react-qr-code";
 import { toast } from "sonner";
 import { haversineDistance } from "@libs/common";
+import moment from "moment";
+import { v4 as uuidv4 } from "uuid";
+import { number } from "yup";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import { checkIn } from "@libs/api";
+import { AxiosError, AxiosResponse } from "axios";
+
+type ROVStatus = "past" | "today" | "future" | "future_or_past";
+export type RovActs = {
+  id: string;
+  dayChecked: string;
+  isChecked: boolean;
+  isRedeemed: boolean;
+  status?: ROVStatus;
+  updatedBy? : string;
+};
 
 type Props = {
-  acts: Act[];
+  days: string[];
+  rovActs: RovActs[];
   uuid: string;
   refresh: () => void;
 };
 
-export default function Daily({ acts, uuid, refresh }: Props) {
+export default function Daily({ days, rovActs, uuid, refresh }: Props) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [selectAct, setSelectAct] = useState<Act>();
+  const [selectAct, setSelectAct] = useState<RovActs>();
 
   // ask for / check geolocation permission
   const requestGeo = async () => {
@@ -32,13 +48,12 @@ export default function Daily({ acts, uuid, refresh }: Props) {
 
       if (status.state === "granted" || status.state === "prompt") {
         const { coords } = (await getPosition()) as GeolocationPosition;
-        console.log(await getPosition())
-        // calculateDistance(
-        //   coords.latitude,
-        //   coords.longitude,
-        //   13.7212551,
-        //   100.5583281
-        // );
+        calculateDistance(
+          coords.latitude,
+          coords.longitude,
+          Number(process.env.NEXT_PUBLIC_MAIN_LOCATION_LAT),
+          Number(process.env.NEXT_PUBLIC_MAIN_LOCATION_LON)
+        );
         // return await getPosition();
       }
 
@@ -82,51 +97,100 @@ export default function Daily({ acts, uuid, refresh }: Props) {
     const distance = haversineDistance(lat1, lon1, lat2, lon2);
     console.log("Distance: ", distance);
 
-    if (distance > 0.5) {
-      return toast.error(`You are too far from .`);
+    if (distance > Number(process.env.NEXT_PUBLIC_DISTANCE_RADIUS)) {
+      return toast.error(
+        `You are too far from ${process.env.NEXT_PUBLIC_MAIN_LOCATION_NAME}.`
+      );
+    }
+    if (distance < Number(process.env.NEXT_PUBLIC_DISTANCE_RADIUS)) {
+      return confirm.mutate();
     }
   };
 
+  const today = moment().tz("Asia/Bangkok").startOf("day");
+
+  const result: RovActs[] = days.map((dateStr) => {
+    const date = moment
+      .tz(dateStr, "YYYY-MM-DD", "Asia/Bangkok")
+      .startOf("day");
+    const existing = rovActs.find((item) => item.dayChecked === dateStr);
+
+    let status: "past" | "today" | "future";
+    if (date.isSame(today)) {
+      status = "today";
+    } else if (date.isBefore(today)) {
+      status = "past";
+    } else {
+      status = "future";
+    }
+    return {
+      id: existing?.id || uuidv4(),
+      dayChecked: date.format("YYYY-MM-DD"),
+      isChecked: existing?.isChecked || false,
+      isRedeemed: existing?.isRedeemed || false,
+      status,
+    };
+  });
+
+  const confirm = useMutation({
+    mutationFn: async () => {
+      return await checkIn();
+    },
+    onMutate: () => {},
+    onError: (error: AxiosError) => {
+      console.log(error);
+      //@ts-ignore
+      toast.error(error.response?.data.message);
+    },
+    onSuccess: (data) => {},
+    onSettled: () => {
+      refresh();
+    },
+  });
+
   return (
     <>
-      {acts
-        .filter((act) => act.status)
-        .map((act, index) => (
-          <div
-            className="bg-black/40 rounded-3xl text-gray-300  p-8"
-            key={index}
-          >
-            <div className="flex  justify-between items-center">
-              <p className="font-bold">Day 1</p>
-              <p className="text-sm">14 May 2025</p>
-            </div>
-            <Divider className="border-red-100 bg-white/15 my-4" />
-            <div className="flex flex-col gap-4">
-              <div className="flex justify-between items-center">
-                <p>Check in</p>
-                <Button
-                  className="rounded-full button-primary text-lg"
-                  onPress={requestGeo}
-                >
-                  Check in
-                </Button>
-              </div>
-              <div className="flex justify-between items-center">
-                <p>Food & Beverage</p>
-                <Button
-                  className="rounded-full button-primary text-lg"
-                  isDisabled={act.isRedeemed}
-                  onPress={() => {
-                    onOpen();
-                    setSelectAct(act);
-                  }}
-                >
-                  Redeem
-                </Button>
-              </div>
-            </div>
-          </div>
-        ))}
+      <p className="text-white text-2xl">Today Event</p>
+      {result.filter((day) => day.status === "today").length > 0 ? (
+        result
+          .filter((day) => day.status === "today")
+          .map((day, index) => (
+            <CardRov
+              key={day.id}
+              index={index}
+              day={day}
+              requestGeo={requestGeo}
+              onOpen={onOpen}
+              confirm={confirm}
+              setSelectAct={setSelectAct}
+            />
+          ))
+      ) : (
+        <p className="text-white/60 text-center">No Today Event</p>
+      )}
+
+      <Divider className="border-red-100 bg-white/15 my-4" />
+
+      <p className="text-white text-2xl">Upcoming Event</p>
+
+      {result.filter((day) => day.status === "future").length > 0 ? (
+        result
+          .filter((day) => day.status === "future")
+          .map((day, index) => (
+            <CardRov
+              key={day.id}
+              index={index}
+              day={day}
+              requestGeo={requestGeo}
+              onOpen={onOpen}
+              confirm={confirm}
+              setSelectAct={setSelectAct}
+            />
+          ))
+      ) : (
+        <p className="text-white/60 text-center">No Future Event</p>
+      )}
+      {/* [c4d4f2a5-1332-4946-9612-87a864ff766d,36ea4c94-6e3a-4725-89ea-ba0b8d77ef6e] */}
       <Modal
         isOpen={isOpen}
         placement={"center"}
@@ -141,10 +205,10 @@ export default function Daily({ acts, uuid, refresh }: Props) {
             <>
               <ModalBody>
                 <div className="flex flex-col items-center justify-center gap-4">
-                  {/* <p className="text-xl bold text-blue-900 uppercase text-center">
-                {Number(selectAct?.id) + 1}.{selectAct?.title}
-              </p> */}
-                  <QRCode value={`[${uuid},${selectAct?.uuid}]`} />
+                  <p className="text-2xl bold text-white uppercase text-center">
+                    {today.format("dddd DD MMMM YYYY")}
+                  </p>
+                  <QRCode value={`[${uuid},${selectAct?.id}]`} />
                   <p className="text-2xl text-white font-bold">
                     Food & Beverage QR
                   </p>
@@ -168,3 +232,69 @@ export default function Daily({ acts, uuid, refresh }: Props) {
     </>
   );
 }
+
+type CardRovProps = {
+  index: number;
+  day: RovActs;
+  requestGeo: () => void;
+  onOpen: () => void;
+  confirm: UseMutationResult<
+    AxiosResponse<any, any>,
+    AxiosError<unknown, any>,
+    void,
+    void
+  >;
+  setSelectAct: Dispatch<SetStateAction<RovActs | undefined>>;
+};
+
+const CardRov = ({
+  day,
+  index,
+  requestGeo,
+  onOpen,
+  confirm,
+  setSelectAct,
+}: CardRovProps) => {
+  return (
+    <div className="bg-black/40 rounded-3xl text-gray-300  p-8" key={index}>
+      <div className="flex  justify-between items-center">
+        <p className="text-sm">
+          {moment(day.dayChecked).format("ddd DD MMMM YYYY")}
+        </p>
+        <p className="font-bold">
+          {day.isChecked && day.isRedeemed ? "Completed" : ""}
+        </p>
+      </div>
+      <Divider className="border-red-100 bg-white/15 my-4" />
+
+      <div className="flex flex-col gap-4">
+        <div className="flex justify-between items-center">
+          <p>Check in</p>
+          <Button
+            className="rounded-full button-primary text-lg w-[140px]"
+            onPress={requestGeo}
+            isLoading={confirm.isPending}
+            isDisabled={day.status !== "today" || day.isChecked}
+          >
+            {day.isChecked ? "Checked" : "Check in"}
+          </Button>
+        </div>
+        <div className="flex justify-between items-center">
+          <p>Food & Beverage</p>
+          <Button
+            className="rounded-full button-primary text-lg w-[140px]"
+            isDisabled={
+              day.status !== "today" || day.isRedeemed || !day.isChecked
+            }
+            onPress={() => {
+              onOpen();
+              setSelectAct(day);
+            }}
+          >
+            {day.isRedeemed ? "Redeemed" : "Get QR"}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};

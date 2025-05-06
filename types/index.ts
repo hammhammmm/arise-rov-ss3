@@ -1,5 +1,6 @@
 import { SVGProps } from "react";
 import { Coupons } from "../src/app/api/sign-in/coupons.model";
+import { RovActs } from "@components/Daily";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
@@ -91,19 +92,9 @@ export interface UserInfoEPassport {
   uuid: string;
   employee_id: string;
   email: string;
-  is_checkin: boolean;
-  is_completed: boolean;
-  is_bonus: boolean;
-  acts: Act[];
+  acts: RovActs[];
   created_at: Date;
   updated_at: Date;
-  checkin: Checkin;
-  usage?: {
-    coupons: Coupons[];
-  };
-  detail :{
-    size: string
-  }
   role: string;
 }
 

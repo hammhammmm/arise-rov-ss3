@@ -10,7 +10,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { getUserInfo } from "./libs/api";
 import Loading from "./loading";
-import Daily from "@components/Daily";
+import Daily, { RovActs } from "@components/Daily";
+import { v4 as uuidv4 } from "uuid";
 
 type Props = {};
 
@@ -48,6 +49,10 @@ export default function Page({}: Props) {
     query.refetch();
   };
 
+  const days: string[] = String(process.env.NEXT_PUBLIC_TOURNAMENT_DATES).split(
+    ","
+  );
+
   return (
     <>
       <div className="flex flex-col gap-4">
@@ -69,20 +74,34 @@ export default function Page({}: Props) {
           </Card>
         </div>
         <div className="flex flex-col gap-4">
-          <Daily acts={userInfo.acts}
-                    uuid={userInfo.uuid}
-                    refresh={refresh}/>
+          <Daily
+            days={days}
+            rovActs={userInfo.acts}
+            uuid={userInfo.uuid}
+            refresh={refresh}
+          />
         </div>
 
         <div className="feedback-card p-8 flex flex-col gap-4 items-start">
           <div>
-      <p className="text-xs">Submit your tournament experience on May 29, 2025...</p>
-      <p className="text-xl title font-bold">Beyond Limits</p>
-      <p className="text-sm">Your honest thoughts create better tournaments.</p>
-      </div>
-      <Button className="rounded-full button-primary text-lg" isDisabled>Go Now</Button>
-    </div>
-
+            <p className="text-xs">
+              Submit your tournament experience on May 29, 2025...
+            </p>
+            <p className="text-xl title font-bold">Beyond Limits</p>
+            <p className="text-sm">
+              Your honest thoughts create better tournaments.
+            </p>
+          </div>
+          <Button className="rounded-full button-primary text-lg" isDisabled>
+            <a
+              href={`${process.env.NEXT_PUBLIC_SURVEY_URL}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Go now
+            </a>
+          </Button>
+        </div>
       </div>
 
       {/* For Redeem List */}

@@ -4,7 +4,7 @@ import "./globals.scss";
 import { Providers } from "./providers";
 import Section from "./section";
 
-const title = `Arise Connext ${process.env.NEXT_PUBLIC_ARISE_CONNEXT_EP}`;
+const title = `Beyond Limits | ROV tournament ss3`;
 const description = "Arise by INFINITAS, Making digital life possible for All";
 const keywords = [""];
 export const metadata: Metadata = {

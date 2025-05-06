@@ -1,6 +1,6 @@
 {
-  "name": "one-spirit-check-in",
-  "version": "0.1.0",
+  "name": "arise-rov-checkin",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "next dev",

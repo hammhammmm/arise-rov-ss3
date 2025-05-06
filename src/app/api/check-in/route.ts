@@ -1,10 +1,13 @@
 "use server";
 
 import { Eligible } from "@/types/index";
+import { RovActs } from "@components/Daily";
 import { createClient } from "@supabase/supabase-js";
 import { importJWK, jwtVerify } from "jose";
+import moment, { tz } from "moment-timezone";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { v4 as uuidv4 } from "uuid";
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
@@ -42,10 +45,40 @@ export const POST = async (req: Request, res: Response) => {
     const employeeId = payload.employeeId as Eligible;
 
     const TB_ARISE_CONNEXT = process.env.TB_ARISE_CONNEXT as string;
+    const today = moment()
+      .tz("Asia/Bangkok")
+      .startOf("day")
+      .format("YYYY-MM-DD");
+    console.log("today: ", today);
+    const rovActs: RovActs = {
+      id: uuidv4(),
+      dayChecked: today,
+      isChecked: true,
+      isRedeemed: false,
+    };
+
+    console.log("rovActs: ", rovActs);
+
+    let query = await supabase
+      .from(TB_ARISE_CONNEXT)
+      .select(`*`)
+      .eq("email", email);
+
+    if (query.error) {
+      console.log("arise_checkin.error: ", query.error);
+      return NextResponse.json(
+        { message: "Failed to retrieve data.", code: 4003 },
+        { status: 400 }
+      );
+    }
+
+    console.log("query.data: ", query.data);
+    console.log("query.data[0]: ", query.data[0].acts);
+    const acts:RovActs[] = query.data[0].acts;
 
     const { data, error } = await supabase
       .from(TB_ARISE_CONNEXT)
-      .update({ is_checkin: true })
+      .update({ acts: [...acts, rovActs], updated_at: moment().tz("Asia/Bangkok").valueOf() })
       .eq("employee_id", employeeId);
 
     if (error) {

@@ -40,13 +40,8 @@ export const GET = async (req: Request, res: Response) => {
 
     const email = payload.email;
     let { data, error } = await supabase
-      .from(process.env.TB_ARISE_EPASSPORT as string)
-      .select(
-        `*,
-        checkin: ${process.env.TB_ARISE_CONNEXT}(is_walkin,is_checkin,is_redeem),
-        usage: ${process.env.TB_ARISE_COUPONS_USAGE}(coupons)
-        `
-      )
+      .from(process.env.TB_ARISE_CONNEXT as string)
+      .select(`*`)
       .eq("email", email);
 
     if (error) {
@@ -66,16 +61,6 @@ export const GET = async (req: Request, res: Response) => {
     }
     const userInfo = data && data[0];
 
-    // GET size shirt
-    let { data: data_master, error: error_master } = await supabase
-      .from(process.env.TB_ARISE_MASTER as string)
-      .select(`*`)
-      // @ts-ignore
-      .eq("employee_id", userInfo.employee_id);
-
-    console.log(data_master);
-    console.log("error_master:", error_master);
-
     let { data: ariseStaff, error: ariseStaffError } = await supabase
       .from(process.env.TB_ARISE_STAFF as string)
       .select(`*`)
@@ -90,15 +75,6 @@ export const GET = async (req: Request, res: Response) => {
     }
 
     console.log("ariseStaffError:", ariseStaffError);
-    let size = "";
-
-    if (data_master == null || data_master.length == 0) {
-      size = "";
-    } else {
-      if (data_master[0].size) {
-        size = data_master[0].size;
-      }
-    }
 
     return NextResponse.json(
       {
@@ -107,7 +83,6 @@ export const GET = async (req: Request, res: Response) => {
           // @ts-ignore
           ...userInfo,
           role: role,
-          detail: { size: size },
         },
       },
       { status: 200 }

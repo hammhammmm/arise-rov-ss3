@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { importJWK, jwtVerify } from "jose";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { RovActs } from "@components/Daily";
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
@@ -44,27 +45,29 @@ export const POST = async (req: Request, res: Response) => {
   }
 
   const email = payload.email;
+  const TB_ARISE_CONNEXT = process.env.TB_ARISE_CONNEXT as string;
+
 
   try {
-    const { data: arise_epassport, error: arise_epassport_error } =
+    const userInfo =
       await supabase
-        .from(`${process.env.TB_ARISE_EPASSPORT}`)
-        .select(`acts,is_completed,is_bonus`)
+        .from(TB_ARISE_CONNEXT)
+        .select("*")
         .eq("uuid", uuid);
 
-    if (arise_epassport_error) {
+    if (userInfo.error) {
       return NextResponse.json(
         { message: "Failed fetching data .", code: 4004 },
         { status: 404 }
       );
     }
 
-    console.log("arise_epassport: ", arise_epassport);
+    console.log("arise_epassport: ", userInfo.error);
 
-    const activities: Act[] = arise_epassport && arise_epassport[0].acts;
+    const activities: RovActs[] = userInfo && userInfo.data[0].acts;
 
     activities.forEach((act) => {
-      if (act.uuid == actId) {
+      if (act.id == actId) {
         if (act.isRedeemed) {
           return NextResponse.json(
             { message: "Acitivity is already redeemed.", code: 4006 },
@@ -76,15 +79,10 @@ export const POST = async (req: Request, res: Response) => {
       }
     });
 
-    const countRedeemed = activities.filter((act) => act.isRedeemed).length;
-    console.log(countRedeemed);
-
     const { data, error } = await supabase
       .from(`${process.env.TB_ARISE_EPASSPORT}`)
       .update({
         acts: activities,
-        is_completed: countRedeemed >= Number(process.env.NEXT_PUBLIC_MIN_ACT),
-        is_bonus: countRedeemed === Number(process.env.NEXT_PUBLIC_MAX_ACT),
       })
       .eq("uuid", uuid);
 
