@@ -224,12 +224,7 @@ export default function Daily({ days, rovActs, uuid, refresh }: Props) {
                   <p className="text-2xl bold text-white uppercase text-center">
                     {today.format("dddd DD MMMM YYYY")}
                   </p>
-                  <p>{`[${uuid},${selectAct?.id}]`}</p>
-                  {/* <QRCode value={`[${uuid},${selectAct?.id}]`} /> */}
-                  {/* <QRCode value={`[${uuid},${selectAct?.id}]`} /> */}
-
-                  {/* <QRCodeCanvas value={"TEST"} size={300} /> */}
-                  <img src={qrUrl} alt="" width={400} height={400}></img>
+                  <img src={qrUrl} alt="" width={250} height={250}></img>
                   <p className="text-2xl text-white font-bold">
                     Food & Beverage QR
                   </p>
