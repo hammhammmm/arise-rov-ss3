@@ -54,7 +54,10 @@ export default function Page() {
         <CardBody className="flex flex-col justify-center gap-3">
           <div className=" p-6">
          
-            <QrReader
+          <Scanner 
+          formats={['qr_code']}
+          onScan={(result) => console.log(result)} allowMultiple={true} scanDelay={1000} sound={true} onError={(error: unknown) => {console.log(error)}}/>   
+            {/* <QrReader
               scanDelay={1000}
               onResult={(result, error) => {
                 if (!!result) {
@@ -79,7 +82,7 @@ export default function Page() {
                 paddingBottom: "2rem",
               }}
               constraints={{ facingMode: "environment" }}
-            />
+            /> */}
           </div>
 
           <p className="text-center text-xl text-green-600">
