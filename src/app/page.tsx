@@ -85,9 +85,9 @@ export default function Page({}: Props) {
         <div className="feedback-card p-8 flex flex-col gap-4 items-start">
           <div>
             <p className="text-xs">
-              Submit your tournament experience on May 29, 2025...
+              Submit your tournament experience <br/>on May 29, 2025...
             </p>
-            <p className="text-xl title font-bold">Beyond Limits</p>
+            <p className="text-xl title-no-shadow font-bold">Beyond Limits</p>
             <p className="text-sm">
               Your honest thoughts create better tournaments.
             </p>

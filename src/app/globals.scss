@@ -177,10 +177,16 @@ main {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0px 0px 0px rgba(#D6FAFF, 0.1),
-  -3px 10px 12px rgba(#D6FAFF,.3);
+  -1px 5px 6px rgba(#D6FAFF,.2);
 }
 .subTitle{
   background: -webkit-linear-gradient(30deg,#AEB4C1, #FFFFFF,#AEB4C1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.title-no-shadow{
+  background: -webkit-linear-gradient(30deg,#9EFBD3, #57E9F2,#45D4FB);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
