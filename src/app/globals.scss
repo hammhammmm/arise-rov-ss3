@@ -160,12 +160,12 @@ main {
     bottom: 115px;
     width: 780px;
     height: 480px;
-    background: url("/images/arum.svg") center / cover no-repeat;
+    background: url("/images/arum.png") center / cover no-repeat;
     z-index: 4;
     pointer-events: none;
     @media screen and (max-width: 900px) {
-      max-width: 390px;
-      max-height: 240px;
+      max-width: 360px;
+      max-height: 380px;
     bottom: 0px;
 
     }
