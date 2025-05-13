@@ -46,34 +46,35 @@ export default function Daily({ days, rovActs, uuid, refresh }: Props) {
 
   // ask for / check geolocation permission
   const requestGeo = async () => {
-    try {
-      const status = await navigator.permissions.query({ name: "geolocation" });
+    return confirm.mutate();
+    // try {
+    //   const status = await navigator.permissions.query({ name: "geolocation" });
 
-      if (status.state === "granted" || status.state === "prompt") {
-        const { coords } = (await getPosition()) as GeolocationPosition;
-        calculateDistance(
-          coords.latitude,
-          coords.longitude,
-          Number(process.env.NEXT_PUBLIC_MAIN_LOCATION_LAT),
-          Number(process.env.NEXT_PUBLIC_MAIN_LOCATION_LON)
-        );
-        // return await getPosition();
-      }
+    //   if (status.state === "granted" || status.state === "prompt") {
+    //     const { coords } = (await getPosition()) as GeolocationPosition;
+    //     calculateDistance(
+    //       coords.latitude,
+    //       coords.longitude,
+    //       Number(process.env.NEXT_PUBLIC_MAIN_LOCATION_LAT),
+    //       Number(process.env.NEXT_PUBLIC_MAIN_LOCATION_LON)
+    //     );
+    //     // return await getPosition();
+    //   }
 
-      if (status.state === "denied") {
-        // Call once more—will reprompt only if denial wasn’t permanent
-        try {
-          return await getPosition();
-        } catch (err) {
-          showEnableLocationSteps();
-          throw err;
-        }
-      }
-    } catch (err) {
-      console.error(err);
+    //   if (status.state === "denied") {
+    //     // Call once more—will reprompt only if denial wasn’t permanent
+    //     try {
+    //       return await getPosition();
+    //     } catch (err) {
+    //       showEnableLocationSteps();
+    //       throw err;
+    //     }
+    //   }
+    // } catch (err) {
+    //   console.error(err);
 
-      // optional fallback logic here
-    }
+    //   // optional fallback logic here
+    // }
   };
 
   // grab the current position
@@ -109,6 +110,7 @@ export default function Daily({ days, rovActs, uuid, refresh }: Props) {
       return confirm.mutate();
     }
   };
+  
 
   const today = moment().tz("Asia/Bangkok").startOf("day");
 
