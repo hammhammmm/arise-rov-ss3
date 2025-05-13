@@ -84,7 +84,7 @@ export default function Page({}: Props) {
     },
     onSuccess: (data) => {
       if (data.status == 200) {
-        toast.success("Checkin successfully.");
+        toast.success("Sign in successfully.");
         router.replace("/");
       }
     },
