@@ -1,25 +1,25 @@
 "use client";
 import { UserInfoEPassport } from "@/types/index";
-import CheckIn from "@components/CheckIn";
-import CouponsUsage from "@components/Coupons";
-import Estamp from "@components/Estamp";
+import Daily from "@components/Daily";
 import StaffMode from "@components/StaffMode";
 import { useApp } from "@context/appContext";
-import { Button, Card, CardBody, Divider } from "@nextui-org/react";
+import { Button, Card, CardBody } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { getUserInfo } from "./libs/api";
 import Loading from "./loading";
-import Daily, { RovActs } from "@components/Daily";
-import { v4 as uuidv4 } from "uuid";
+import SurveyButton from "@components/SurveyButton";
 
 type Props = {};
 
 export default function Page({}: Props) {
   const app = useApp();
-  const timeCheckIn = "2025-03-28T07:00:00+07:00";
+  const timeCheckIn = "2025-05-27T07:00:00+07:00";
   const walkInTime = "2025-03-28T11:30:00+07:00";
   const router = useRouter();
+
+
 
   const query = useQuery({
     queryKey: ["userInfo"],
@@ -53,6 +53,8 @@ export default function Page({}: Props) {
     ","
   );
 
+
+
   return (
     <>
       <div className="flex flex-col gap-4">
@@ -85,22 +87,15 @@ export default function Page({}: Props) {
         <div className="feedback-card p-8 flex flex-col gap-4 items-start">
           <div>
             <p className="text-xs">
-              Submit your tournament experience <br/>on May 29, 2025...
+              Submit your tournament experience <br/>on May 30, 2025...
             </p>
             <p className="text-xl title-no-shadow font-bold">Beyond Limits</p>
             <p className="text-sm">
               Your honest thoughts create better tournaments.
             </p>
           </div>
-          <Button className="rounded-full button-primary text-lg" isDisabled>
-            <a
-              href={`${process.env.NEXT_PUBLIC_SURVEY_URL}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Go now
-            </a>
-          </Button>
+          <SurveyButton time={timeCheckIn}/>
+         
         </div>
       </div>
 
